@@ -3,6 +3,7 @@ import 'onboarding_data.dart';
 import '../widgets/onboarding_page.dart';
 import '../widgets/page_indicator.dart';
 import '../widgets/next_button.dart';
+import '../../auth/presentation/login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -23,40 +24,43 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void nextPage() {
-    if (_currentPage < onboardingPages.length - 1) {
+    if (_currentPage == onboardingPages.length - 1) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    } else {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Welcome to Nexora 🚀")));
     }
   }
 
-  void skipToLastPage() {
-    _pageController.animateToPage(
-      onboardingPages.length - 1,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+  void skipOnboarding() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isLastPage = _currentPage == onboardingPages.length - 1;
+    final bool isLastPage = _currentPage == onboardingPages.length - 1;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: isLastPage ? null : skipToLastPage,
-                child: const Text("Skip"),
+            Padding(
+              padding: const EdgeInsets.only(right: 20, top: 10),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: TextButton(
+                  onPressed: skipOnboarding,
+                  child: const Text("Skip", style: TextStyle(fontSize: 16)),
+                ),
               ),
             ),
 
