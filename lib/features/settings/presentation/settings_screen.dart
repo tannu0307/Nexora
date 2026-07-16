@@ -1,113 +1,198 @@
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
-
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  bool notifications = true;
-  bool darkMode = false;
-  bool biometric = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
+
       appBar: AppBar(
-        title: const Text("Settings"),
+        title: const Text(
+          "Settings",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+
+        centerTitle: true,
+
         backgroundColor: Colors.transparent,
+
         elevation: 0,
+
         foregroundColor: Colors.black,
       ),
-      body: ListView(
+
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        children: [
-          const Text(
-            "Preferences",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
 
-          const SizedBox(height: 20),
+        child: Column(
+          children: [
+            // Profile Header
+            Container(
+              width: double.infinity,
 
-          Card(
-            child: SwitchListTile(
-              secondary: const Icon(
-                Icons.notifications,
-                color: Color(0xFF4F46E5),
+              padding: const EdgeInsets.all(25),
+
+              decoration: BoxDecoration(
+                color: const Color(0xFF4F46E5),
+
+                borderRadius: BorderRadius.circular(24),
               ),
-              title: const Text("Notifications"),
-              value: notifications,
-              onChanged: (value) {
-                setState(() {
-                  notifications = value;
-                });
-              },
-            ),
-          ),
 
-          Card(
-            child: SwitchListTile(
-              secondary: const Icon(Icons.dark_mode, color: Color(0xFF4F46E5)),
-              title: const Text("Dark Mode"),
-              value: darkMode,
-              onChanged: (value) {
-                setState(() {
-                  darkMode = value;
-                });
-              },
-            ),
-          ),
+              child: const Column(
+                children: [
+                  CircleAvatar(
+                    radius: 45,
 
-          Card(
-            child: SwitchListTile(
-              secondary: const Icon(
-                Icons.fingerprint,
-                color: Color(0xFF4F46E5),
+                    backgroundColor: Colors.white,
+
+                    child: Icon(
+                      Icons.person,
+
+                      size: 50,
+
+                      color: Color(0xFF4F46E5),
+                    ),
+                  ),
+
+                  SizedBox(height: 15),
+
+                  Text(
+                    "Nexora Student",
+
+                    style: TextStyle(
+                      color: Colors.white,
+
+                      fontSize: 22,
+
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  SizedBox(height: 5),
+
+                  Text(
+                    "Build. Learn. Grow.",
+
+                    style: TextStyle(color: Colors.white70, fontSize: 15),
+                  ),
+                ],
               ),
-              title: const Text("Biometric Lock"),
-              value: biometric,
-              onChanged: (value) {
-                setState(() {
-                  biometric = value;
-                });
+            ),
+
+            const SizedBox(height: 30),
+
+            buildSettingCard(
+              context,
+
+              icon: Icons.person_outline,
+
+              title: "Profile",
+
+              subtitle: "Manage your personal information",
+
+              onTap: () {},
+            ),
+
+            const SizedBox(height: 15),
+
+            buildSettingCard(
+              context,
+
+              icon: Icons.notifications_none,
+
+              title: "Notifications",
+
+              subtitle: "Manage reminders and alerts",
+
+              onTap: () {},
+            ),
+
+            const SizedBox(height: 15),
+
+            buildSettingCard(
+              context,
+
+              icon: Icons.info_outline,
+
+              title: "About Nexora",
+
+              subtitle: "Learn more about Nexora",
+
+              onTap: () {
+                Navigator.pushNamed(context, '/about');
               },
             ),
-          ),
 
-          const SizedBox(height: 25),
+            const SizedBox(height: 15),
 
-          const Text(
-            "More",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
+            buildSettingCard(
+              context,
 
-          const SizedBox(height: 15),
+              icon: Icons.help_outline,
 
-          settingTile(Icons.language, "Language"),
-          settingTile(Icons.lock_outline, "Privacy Policy"),
-          settingTile(Icons.security, "Security"),
-          settingTile(Icons.help_outline, "Help & Support"),
-          settingTile(Icons.feedback_outlined, "Send Feedback"),
-          settingTile(Icons.info_outline, "About Nexora"),
+              title: "Help & Support",
 
-          const SizedBox(height: 30),
+              subtitle: "Get assistance",
 
-          const Center(
-            child: Text("Version 1.0.0", style: TextStyle(color: Colors.grey)),
-          ),
-        ],
+              onTap: () {},
+            ),
+
+            const SizedBox(height: 15),
+
+            buildSettingCard(
+              context,
+
+              icon: Icons.logout,
+
+              title: "Logout",
+
+              subtitle: "Sign out from your account",
+
+              onTap: () {},
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget settingTile(IconData icon, String title) {
+  Widget buildSettingCard(
+    BuildContext context, {
+
+    required IconData icon,
+
+    required String title,
+
+    required String subtitle,
+
+    required VoidCallback onTap,
+  }) {
     return Card(
+      elevation: 2,
+
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFF4F46E5)),
-        title: Text(title),
+        onTap: onTap,
+
+        contentPadding: const EdgeInsets.all(18),
+
+        leading: CircleAvatar(
+          backgroundColor: const Color(0xFFEEF2FF),
+
+          child: Icon(icon, color: const Color(0xFF4F46E5)),
+        ),
+
+        title: Text(
+          title,
+
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+        ),
+
+        subtitle: Text(subtitle),
+
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       ),
     );
