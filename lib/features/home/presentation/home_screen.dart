@@ -15,6 +15,7 @@ import '../widgets/habit_card.dart';
 import '../widgets/goal_card.dart';
 import '../widgets/pomodoro_card.dart';
 import '../widgets/ai_card.dart';
+import '../../about/presentation/about_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

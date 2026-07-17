@@ -11,6 +11,8 @@ import '../../achievements/presentation/achievements_screen.dart';
 import '../../notifications/presentation/notifications_screen.dart';
 import '../../settings/presentation/settings_screen.dart';
 import '../../profile/presentation/profile_screen.dart';
+import '../../about/presentation/about_screen.dart';
+import '../../help_support/presentation/help_support_screen.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -109,6 +111,20 @@ class HomeDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
+            }),
+
+            drawerTile(context, Icons.info_outline, "About Nexora", () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AboutScreen()),
+              );
+            }),
+
+            drawerTile(context, Icons.help_outline, "Help & Support", () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HelpSupportScreen()),
               );
             }),
 

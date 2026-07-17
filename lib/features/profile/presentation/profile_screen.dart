@@ -28,15 +28,32 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 15),
 
             const Text(
-              "Tannu Shree",
+              "Student Name",
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 5),
 
             const Text(
-              "CSIT Student",
+              "student@email.com",
               style: TextStyle(color: Colors.grey, fontSize: 16),
+            ),
+
+            const SizedBox(height: 10),
+
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              decoration: BoxDecoration(
+                color: Color(0xFFEEF2FF),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: const Text(
+                "Beginner Learner",
+                style: TextStyle(
+                  color: Color(0xFF4F46E5),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
 
             const SizedBox(height: 30),
@@ -47,7 +64,9 @@ class ProfileScreen extends StatelessWidget {
 
                 const SizedBox(width: 15),
 
-                Expanded(child: statCard("Tasks", "89", Icons.check_circle)),
+                Expanded(
+                  child: statCard("Tasks Done", "89", Icons.check_circle),
+                ),
               ],
             ),
 
@@ -61,8 +80,8 @@ class ProfileScreen extends StatelessWidget {
 
                 Expanded(
                   child: statCard(
-                    "Streak",
-                    "15 Days",
+                    "Current Streak",
+                    "15 🔥",
                     Icons.local_fire_department,
                   ),
                 ),

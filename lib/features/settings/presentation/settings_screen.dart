@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../about/presentation/about_screen.dart';
+import '../../help_support/presentation/help_support_screen.dart';
+import '../../privacy/presentation/privacy_screen.dart';
+import '../../terms/presentation/terms_screen.dart';
+import '../../app_info/presentation/app_info_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -121,7 +126,10 @@ class SettingsScreen extends StatelessWidget {
               subtitle: "Learn more about Nexora",
 
               onTap: () {
-                Navigator.pushNamed(context, '/about');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AboutScreen()),
+                );
               },
             ),
 

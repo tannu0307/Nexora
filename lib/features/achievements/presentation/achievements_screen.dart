@@ -13,7 +13,7 @@ class AchievementsScreen extends StatelessWidget {
         "earned": true,
       },
       {
-        "title": "100 Tasks",
+        "title": "100 Tasks Completed",
         "subtitle": "Complete 100 tasks",
         "icon": Icons.check_circle,
         "earned": true,
@@ -44,11 +44,19 @@ class AchievementsScreen extends StatelessWidget {
       },
     ];
 
+    final unlocked = achievements
+        .where((item) => item["earned"] == true)
+        .length;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
 
       appBar: AppBar(
-        title: const Text("Achievements"),
+        title: const Text(
+          "Achievements",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: Colors.black,
@@ -56,18 +64,29 @@ class AchievementsScreen extends StatelessWidget {
 
       body: Padding(
         padding: const EdgeInsets.all(20),
+
         child: Column(
           children: [
+            const Text(
+              "Complete study activities to unlock achievements and earn XP.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey, fontSize: 15),
+            ),
+
+            const SizedBox(height: 20),
+
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
+
               decoration: BoxDecoration(
                 color: const Color(0xFF4F46E5),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(22),
               ),
+
               child: Column(
                 children: const [
-                  Icon(Icons.emoji_events, size: 60, color: Colors.amber),
+                  Icon(Icons.emoji_events, size: 65, color: Colors.amber),
 
                   SizedBox(height: 15),
 
@@ -80,11 +99,11 @@ class AchievementsScreen extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 8),
 
                   Text(
-                    "XP : 1280 / 2000",
-                    style: TextStyle(color: Colors.white70, fontSize: 18),
+                    "1280 / 2000 XP",
+                    style: TextStyle(color: Colors.white70, fontSize: 17),
                   ),
 
                   SizedBox(height: 20),
@@ -99,21 +118,61 @@ class AchievementsScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 18),
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Achievements Unlocked",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+
+                  Text(
+                    "$unlocked / ${achievements.length}",
+                    style: const TextStyle(
+                      color: Color(0xFF4F46E5),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
 
             Expanded(
               child: ListView.builder(
                 itemCount: achievements.length,
+
                 itemBuilder: (context, index) {
                   final achievement = achievements[index];
 
                   return Card(
+                    elevation: 2,
                     margin: const EdgeInsets.only(bottom: 15),
+
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+
                     child: ListTile(
+                      contentPadding: const EdgeInsets.all(15),
+
                       leading: CircleAvatar(
+                        radius: 28,
                         backgroundColor: achievement["earned"]
                             ? Colors.amber
                             : Colors.grey.shade300,
+
                         child: Icon(
                           achievement["icon"],
                           color: achievement["earned"]
@@ -122,13 +181,41 @@ class AchievementsScreen extends StatelessWidget {
                         ),
                       ),
 
-                      title: Text(achievement["title"]),
+                      title: Text(
+                        achievement["title"],
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
 
-                      subtitle: Text(achievement["subtitle"]),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Text(achievement["subtitle"]),
+                      ),
 
-                      trailing: achievement["earned"]
-                          ? const Icon(Icons.check_circle, color: Colors.green)
-                          : const Icon(Icons.lock_outline, color: Colors.grey),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            achievement["earned"]
+                                ? Icons.check_circle
+                                : Icons.lock_outline,
+                            color: achievement["earned"]
+                                ? Colors.green
+                                : Colors.grey,
+                          ),
+
+                          const SizedBox(height: 4),
+
+                          Text(
+                            "+100 XP",
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: achievement["earned"]
+                                  ? Colors.green
+                                  : Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

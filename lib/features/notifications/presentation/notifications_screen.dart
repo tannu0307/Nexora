@@ -69,6 +69,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             },
             child: const Text("Read All"),
           ),
+
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == "clear") {
+                setState(() {
+                  notifications.clear();
+                });
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: "clear", child: Text("Clear All")),
+            ],
+          ),
         ],
       ),
 
@@ -118,58 +131,88 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
 
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: notifications.length,
-              itemBuilder: (context, index) {
-                final item = notifications[index];
-
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 15),
-
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: const Color(0xFF4F46E5),
-                      child: Icon(item["icon"], color: Colors.white),
-                    ),
-
-                    title: Text(item["title"]),
-
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            child: notifications.isEmpty
+                ? const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(item["subtitle"]),
-                        const SizedBox(height: 4),
+                        Icon(
+                          Icons.notifications_off_outlined,
+                          size: 90,
+                          color: Colors.grey,
+                        ),
+
+                        SizedBox(height: 20),
+
                         Text(
-                          item["time"],
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
+                          "No Notifications",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
                           ),
+                        ),
+
+                        SizedBox(height: 8),
+
+                        Text(
+                          "You're all caught up!",
+                          style: TextStyle(color: Colors.grey),
                         ),
                       ],
                     ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: notifications.length,
+                    itemBuilder: (context, index) {
+                      final item = notifications[index];
 
-                    trailing: item["read"]
-                        ? null
-                        : Container(
-                            width: 10,
-                            height: 10,
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                              shape: BoxShape.circle,
-                            ),
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 15),
+
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: const Color(0xFF4F46E5),
+                            child: Icon(item["icon"], color: Colors.white),
                           ),
 
-                    onTap: () {
-                      setState(() {
-                        item["read"] = true;
-                      });
+                          title: Text(item["title"]),
+
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(item["subtitle"]),
+                              const SizedBox(height: 4),
+                              Text(
+                                item["time"],
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          trailing: item["read"]
+                              ? null
+                              : Container(
+                                  width: 10,
+                                  height: 10,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+
+                          onTap: () {
+                            setState(() {
+                              item["read"] = true;
+                            });
+                          },
+                        ),
+                      );
                     },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
