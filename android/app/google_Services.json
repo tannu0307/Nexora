@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "52841907054",
+    "project_id": "nexora-ea287",
+    "storage_bucket": "nexora-ea287.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:52841907054:android:e8ba9eaafcd1f8363af77f",
+        "android_client_info": {
+          "package_name": "com.nexora.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNHpnU_YBQwpL7y47LNQiOs7TWHqs8V8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

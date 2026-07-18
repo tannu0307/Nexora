@@ -1,89 +1,103 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SignupScreen extends StatefulWidget {
+import '../providers/auth_provider.dart';
+
+class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  ConsumerState<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+class _SignupScreenState extends ConsumerState<SignupScreen> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
-  bool obscurePassword = true;
-  bool obscureConfirmPassword = true;
+  bool isLoading = false;
 
   @override
   void dispose() {
-    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> signUpUser() async {
+    if (emailController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please fill all fields")));
+
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await ref
+          .read(authProvider.notifier)
+          .signUp(emailController.text.trim(), passwordController.text.trim());
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Account created successfully 🎉")),
+        );
+
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      body: SafeArea(
+      appBar: AppBar(title: const Text("Sign Up")),
+
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+
             children: [
-              const SizedBox(height: 50),
-
-              const Center(
-                child: Icon(
-                  Icons.person_add_alt_1_rounded,
-                  size: 90,
-                  color: Color(0xFF4F46E5),
-                ),
-              ),
-
-              const SizedBox(height: 35),
+              const SizedBox(height: 80),
 
               const Text(
-                "Create Account",
+                "Create Account 🚀",
+
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
 
-              const SizedBox(height: 8),
-
-              const Text(
-                "Create your Nexora account and start achieving your goals.",
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-
-              const SizedBox(height: 35),
-
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: "Full Name",
-                  prefixIcon: const Icon(Icons.person_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
 
               TextField(
                 controller: emailController,
+
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
+
+                decoration: const InputDecoration(
                   labelText: "Email",
-                  prefixIcon: const Icon(Icons.email_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+
+                  hintText: "example@gmail.com",
+
+                  border: OutlineInputBorder(),
                 ),
               ),
 
@@ -91,49 +105,15 @@ class _SignupScreenState extends State<SignupScreen> {
 
               TextField(
                 controller: passwordController,
-                obscureText: obscurePassword,
-                decoration: InputDecoration(
+
+                obscureText: true,
+
+                decoration: const InputDecoration(
                   labelText: "Password",
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      obscurePassword ? Icons.visibility_off : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        obscurePassword = !obscurePassword;
-                      });
-                    },
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
 
-              const SizedBox(height: 20),
+                  hintText: "Minimum 6 characters",
 
-              TextField(
-                controller: confirmPasswordController,
-                obscureText: obscureConfirmPassword,
-                decoration: InputDecoration(
-                  labelText: "Confirm Password",
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      obscureConfirmPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        obscureConfirmPassword = !obscureConfirmPassword;
-                      });
-                    },
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                  border: OutlineInputBorder(),
                 ),
               ),
 
@@ -141,38 +121,35 @@ class _SignupScreenState extends State<SignupScreen> {
 
               SizedBox(
                 width: double.infinity,
-                height: 55,
+
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: isLoading ? null : signUpUser,
+
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4F46E5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                    padding: const EdgeInsets.all(16),
                   ),
-                  child: const Text(
-                    "Create Account",
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+
+                  child: isLoading
+                      ? const SizedBox(
+                          height: 22,
+
+                          width: 22,
+
+                          child: CircularProgressIndicator(),
+                        )
+                      : const Text("Sign Up", style: TextStyle(fontSize: 18)),
                 ),
               ),
 
-              const SizedBox(height: 25),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Already have an account?"),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Login"),
-                  ),
-                ],
-              ),
-
               const SizedBox(height: 20),
+
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+
+                child: const Text("Already have an account? Login"),
+              ),
             ],
           ),
         ),
