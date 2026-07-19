@@ -15,6 +15,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final passwordController = TextEditingController();
 
   bool isLoading = false;
+  bool obscurePassword = true;
 
   @override
   void dispose() {
@@ -29,7 +30,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Please fill all fields")));
-
       return;
     }
 
@@ -40,7 +40,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     try {
       await ref
           .read(authProvider.notifier)
-          .signUp(emailController.text.trim(), passwordController.text.trim());
+          .signUp(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -55,12 +58,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           context,
         ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
-    }
-
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -68,89 +71,93 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Sign Up")),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(Icons.person_add_alt_1, size: 80),
 
-      body: Padding(
-        padding: const EdgeInsets.all(24),
+                const SizedBox(height: 20),
 
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-
-            children: [
-              const SizedBox(height: 80),
-
-              const Text(
-                "Create Account 🚀",
-
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-
-              const SizedBox(height: 40),
-
-              TextField(
-                controller: emailController,
-
-                keyboardType: TextInputType.emailAddress,
-
-                decoration: const InputDecoration(
-                  labelText: "Email",
-
-                  hintText: "example@gmail.com",
-
-                  border: OutlineInputBorder(),
+                const Text(
+                  "Create Account 🚀",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
-              ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 8),
 
-              TextField(
-                controller: passwordController,
-
-                obscureText: true,
-
-                decoration: const InputDecoration(
-                  labelText: "Password",
-
-                  hintText: "Minimum 6 characters",
-
-                  border: OutlineInputBorder(),
+                const Text(
+                  "Start your productivity journey",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey),
                 ),
-              ),
 
-              const SizedBox(height: 30),
+                const SizedBox(height: 35),
 
-              SizedBox(
-                width: double.infinity,
-
-                child: ElevatedButton(
-                  onPressed: isLoading ? null : signUpUser,
-
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(16),
+                TextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: "Email",
+                    prefixIcon: Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(),
                   ),
-
-                  child: isLoading
-                      ? const SizedBox(
-                          height: 22,
-
-                          width: 22,
-
-                          child: CircularProgressIndicator(),
-                        )
-                      : const Text("Sign Up", style: TextStyle(fontSize: 18)),
                 ),
-              ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 18),
 
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                TextField(
+                  controller: passwordController,
+                  obscureText: obscurePassword,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = !obscurePassword;
+                        });
+                      },
+                    ),
+                  ),
+                ),
 
-                child: const Text("Already have an account? Login"),
-              ),
-            ],
+                const SizedBox(height: 28),
+
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: isLoading ? null : signUpUser,
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(strokeWidth: 3),
+                          )
+                        : const Text("Sign Up", style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+
+                const SizedBox(height: 15),
+
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Already have an account? Login"),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -16,17 +16,16 @@ class AuthNotifier extends StateNotifier<User?> {
 
   AuthNotifier(this._authService) : super(_authService.currentUser);
 
-  Future<void> signUp(String email, String password) async {
-    state = await _authService.signUp(email, password);
+  Future<void> signUp({required String email, required String password}) async {
+    state = await _authService.signUp(email: email, password: password);
   }
 
-  Future<void> login(String email, String password) async {
-    state = await _authService.login(email, password);
+  Future<void> login({required String email, required String password}) async {
+    state = await _authService.login(email: email, password: password);
   }
 
   Future<void> logout() async {
     await _authService.logout();
-
     state = null;
   }
 }

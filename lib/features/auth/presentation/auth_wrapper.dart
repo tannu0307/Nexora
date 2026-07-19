@@ -1,36 +1,41 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'login_screen.dart';
-// import dashboard screen later
+import '../services/auth_service.dart';
 
-class AuthWrapper extends StatelessWidget {
-  const AuthWrapper({super.key});
+/// Auth Service
+final authServiceProvider = Provider<AuthService>((ref) {
+  return AuthService();
+});
 
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+/// Firebase Auth State Stream
+final authStateProvider = StreamProvider<User?>((ref) {
+  return FirebaseAuth.instance.authStateChanges();
+});
 
-      builder: (context, snapshot) {
-        // Waiting for Firebase response
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
+/// Auth Notifier
+final authProvider = StateNotifierProvider<AuthNotifier, User?>((ref) {
+  return AuthNotifier(ref.read(authServiceProvider));
+});
 
-        // User logged in
-        if (snapshot.hasData) {
-          // Dashboard will come here later
-          return const Scaffold(
-            body: Center(child: Text("Welcome to Nexora 🚀")),
-          );
-        }
+class AuthNotifier extends StateNotifier<User?> {
+  final AuthService _authService;
 
-        // User not logged in
-        return const LoginScreen();
-      },
-    );
+  AuthNotifier(this._authService) : super(_authService.currentUser);
+
+  /// Sign Up
+  Future<void> signUp({required String email, required String password}) async {
+    state = await _authService.signUp(email: email, password: password);
+  }
+
+  /// Login
+  Future<void> login({required String email, required String password}) async {
+    state = await _authService.login(email: email, password: password);
+  }
+
+  /// Logout
+  Future<void> logout() async {
+    await _authService.logout();
+    state = null;
   }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'onboarding_data.dart';
+
+import '../../auth/presentation/auth_wrapper.dart';
+import '../widgets/next_button.dart';
 import '../widgets/onboarding_page.dart';
 import '../widgets/page_indicator.dart';
-import '../widgets/next_button.dart';
-import '../../auth/presentation/login_screen.dart';
+import 'onboarding_data.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -27,7 +28,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (_currentPage == onboardingPages.length - 1) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const AuthWrapper()),
       );
     } else {
       _pageController.nextPage(
@@ -40,7 +41,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void skipOnboarding() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      MaterialPageRoute(builder: (_) => const AuthWrapper()),
     );
   }
 
@@ -54,7 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(right: 20, top: 10),
+              padding: const EdgeInsets.only(top: 10, right: 20),
               child: Align(
                 alignment: Alignment.topRight,
                 child: TextButton(
